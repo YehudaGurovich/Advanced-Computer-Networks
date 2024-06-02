@@ -4,59 +4,46 @@ import socket
 import protocol
 
 
-def handle_client_request(current_socket: socket.socket, clients_names: dict, data: str) -> tuple:
-    # Split the data into 3 parts depending on the command
-    data_list = data.split(" ", 2)
-    command = data_list[0]
-    # NAME <name> will set name. Server will reply error if duplicate
-    if command == protocol.NAME_COMMAND:
-        if len(data_list) < 2:
-            return "Invalid NAME format", current_socket
-        name = data_list[1]
+def handle_client_request(current_socket, clients_names, data):
+    parts = data.split(" ", 2)
+    command = parts[0]
+
+    if command == "NAME":
+        name = parts[1]
         if current_socket in clients_names.values():
             return "You have already set your name", current_socket
-        elif name == "":
-            return "Name cannot be empty", current_socket
         elif name in clients_names:
             return f"{name} is already taken", current_socket
         else:
             clients_names[name] = current_socket
             return f"HELLO {name}", current_socket
-    # GET_NAMES will get all names
-    elif command == protocol.GET_NAMES_COMMAND:
+    elif command == "GET_NAMES":
         names = " ".join(clients_names.keys())
         return names, current_socket
-    # MSG <NAME> <message> will send message to client name
-    elif command == protocol.MSG_COMMAND:
-        if len(data_list) < 3:
+    elif command == "MSG":
+        if len(parts) < 3:
             return "Invalid MSG format", current_socket
-        target_name = data_list[1]
-        message = data_list[2]
-        if message.strip() == "" or target_name.strip() == "":
-            return "Invalid MSG format", current_socket
-        if target_name not in clients_names:
-            return "Target name does not exist", current_socket
-        if current_socket not in clients_names.values():
-            return "You must set your name first", current_socket
-        else:
+        target_name = parts[1]
+        message = parts[2]
+        if target_name in clients_names:
             sender_name = [
                 name for name, sock in clients_names.items() if sock == current_socket
             ][0]
             full_message = f"{sender_name} SENT {message}"
             return full_message, clients_names[target_name]
-    # EXIT will close client, remove name from clients_names
-    elif command == protocol.EXIT_COMMAND:
+        else:
+            return "Target name does not exist", current_socket
+    elif command == "EXIT":
         for name, sock in clients_names.items():
             if sock == current_socket:
                 clients_names.pop(name)
-                current_socket.close()
                 break
-        return protocol.EXIT_COMMAND, current_socket
+        return "EXIT", current_socket
     else:
         return "Unknown command", current_socket
 
 
-def print_client_sockets(client_sockets: list) -> None:
+def print_client_sockets(client_sockets):
     for c in client_sockets:
         print("\t", c.getpeername())
 
@@ -73,7 +60,7 @@ def main():
 
     while True:
         read_list = client_sockets + [server_socket]
-        ready_to_read, ready_to_write, _ = select.select(
+        ready_to_read, ready_to_write, in_error = select.select(
             read_list, client_sockets, []
         )
 

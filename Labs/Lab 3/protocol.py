@@ -1,10 +1,21 @@
 import socket
 
+# Constants for the protocol
 SERVER_PORT = 7777
 HOSTING = "localhost"
 DATA_HEADER_SIZE = 8
 
+# Command formats for the protocol
+NAME_COMMAND = "NAME"
+GET_NAMES_COMMAND = "GET_NAMES"
+MSG_COMMAND = "MSG"
+EXIT_COMMAND = "EXIT"
+CONNECTION_CHECK = "CONNECTION_CHECK"
 
+
+######################################################################################################
+# Method to create a message to send over the socket
+# Same as in Lab 2
 def create_msg(my_socket: socket.socket, data: str) -> None:
     try:
         # Create the header
@@ -30,6 +41,8 @@ def create_msg(my_socket: socket.socket, data: str) -> None:
         print(e)
 
 
+# Method to receive a message from the socket
+# Same as in Lab 2
 def get_message(my_socket: socket.socket) -> str:
     header_size = DATA_HEADER_SIZE
     header = my_socket.recv(header_size)
@@ -37,7 +50,8 @@ def get_message(my_socket: socket.socket) -> str:
     data_length = int.from_bytes(header, byteorder="big")
 
     if header_size < len(header):
-        raise RuntimeError("Socket connection broken or incomplete header received")
+        raise RuntimeError(
+            "Socket connection broken or incomplete header received")
 
     # Receive the data based on the length
     data = bytearray()
