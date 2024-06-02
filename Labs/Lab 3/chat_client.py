@@ -35,7 +35,8 @@ def redraw_line(msg: str, cursor_position: int) -> None:
 def main():
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     my_socket.connect((protocol.HOSTING, protocol.SERVER_PORT))
-    print("Enter commands:\n")
+    print("Enter commands:")
+    print("Empty message will close the connection\n")
 
     msg = ""
     cursor_position = 0
@@ -43,10 +44,10 @@ def main():
         rlist, _, _ = select.select([my_socket], [], [], 0.1)
         if rlist:
             response = protocol.get_message(my_socket)
-            if response == protocol.EXIT_COMMAND:
-                print("Server closed connection and exited. Exiting...")
+            if response == "" or response == protocol.EXIT_COMMAND:
+                print("Server closed connection. Exiting...")
                 break
-            print(f"Server sent: {response}")
+            print(f"S: {response}")
 
         if msvcrt.kbhit():
             new_char = msvcrt.getch()
