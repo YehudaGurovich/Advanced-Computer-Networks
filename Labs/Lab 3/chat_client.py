@@ -6,7 +6,7 @@ import protocol
 
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 my_socket.connect((protocol.HOSTING, protocol.SERVER_PORT))
-print("Enter commands\n")
+print("Enter commands:\n")
 msg = ""
 while msg != "EXIT":
     rlist, wlist, xlist = select.select([my_socket], [], [], 0.1)
