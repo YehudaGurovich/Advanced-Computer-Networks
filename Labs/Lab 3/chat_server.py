@@ -13,7 +13,7 @@ def handle_client_request(current_socket, clients_names, data):
         if current_socket in clients_names.values():
             return "You have already set your name", current_socket
         elif name in clients_names:
-            return "Name is taken", current_socket
+            return f"{name} is already taken", current_socket
         else:
             clients_names[name] = current_socket
             return f"HELLO {name}", current_socket

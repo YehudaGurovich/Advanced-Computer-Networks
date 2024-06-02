@@ -9,10 +9,11 @@ my_socket.connect((protocol.HOSTING, protocol.SERVER_PORT))
 print("Enter commands:\n")
 msg = ""
 while msg != "EXIT":
-    rlist, wlist, xlist = select.select([my_socket], [], [], 0.1)
+    rlist, _, _ = select.select([my_socket], [], [], 0.1)
     if rlist:
         response = protocol.get_message(my_socket)
         if response == "EXIT":
+            print("Server closed connection and exited. Exiting...")
             break
         print(response)
 
