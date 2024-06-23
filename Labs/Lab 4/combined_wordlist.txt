@@ -229,7 +229,6 @@ ait
 aiu
 aiv
 aiw
-aix
 aiy
 aiz
 aja
@@ -1145,7 +1144,6 @@ brz
 bsa
 bsb
 bsc
-bsd
 bse
 bsf
 bsg
@@ -1824,7 +1822,6 @@ csc
 csd
 cse
 csf
-csg
 csh
 csi
 csj
@@ -2070,7 +2067,6 @@ dbo
 dbp
 dbq
 dbr
-dbs
 dbt
 dbu
 dbv
@@ -2363,7 +2359,7 @@ dmv
 dmw
 dmx
 dmy
-dmz
+
 dna
 dnb
 dnc
@@ -3824,7 +3820,6 @@ fra
 frb
 frc
 frd
-fre
 frf
 frg
 frh
@@ -5850,7 +5845,6 @@ iqy
 iqz
 ira
 irb
-irc
 ird
 ire
 irf
@@ -7435,7 +7429,6 @@ kzx
 kzy
 kzz
 laa
-lab
 lac
 lad
 lae
@@ -7804,7 +7797,6 @@ loc
 lod
 loe
 lof
-log
 loh
 loi
 loj
@@ -8476,7 +8468,6 @@ mnx
 mny
 mnz
 moa
-mob
 moc
 mod
 moe
@@ -8910,7 +8901,6 @@ nep
 neq
 ner
 nes
-net
 neu
 nev
 new
@@ -9296,7 +9286,6 @@ ntl
 ntm
 ntn
 nto
-ntp
 ntq
 ntr
 nts
@@ -10518,7 +10507,6 @@ pol
 pom
 pon
 poo
-pop
 poq
 por
 pos
@@ -12497,7 +12485,6 @@ smo
 smp
 smq
 smr
-sms
 smt
 smu
 smv
@@ -12594,7 +12581,6 @@ sqh
 sqi
 sqj
 sqk
-sql
 sqm
 sqn
 sqo
@@ -12700,7 +12686,6 @@ suj
 suk
 sul
 sum
-sun
 suo
 sup
 suq
@@ -13538,7 +13523,6 @@ uap
 uaq
 uar
 uas
-uat
 uau
 uav
 uaw
@@ -14598,7 +14582,6 @@ vpj
 vpk
 vpl
 vpm
-vpn
 vpo
 vpp
 vpq
@@ -14886,7 +14869,6 @@ wal
 wam
 wan
 wao
-wap
 waq
 war
 was
@@ -15092,7 +15074,6 @@ wij
 wik
 wil
 wim
-win
 wio
 wip
 wiq
@@ -17610,7 +17591,6 @@ af
 ag
 ah
 ai
-aix
 aj
 ak
 al
@@ -17662,7 +17642,6 @@ bp
 bq
 br
 bs
-bsd
 bt
 bu
 bv
@@ -17707,7 +17686,6 @@ cpanel
 cq
 cr
 cs
-csg
 ct
 cu
 customers
@@ -17720,7 +17698,6 @@ d
 da
 data
 db
-dbs
 dc // domain controller?
 dd
 de
@@ -17740,7 +17717,6 @@ dj
 dk
 dl
 dm
-dmz
 dn
 do
 domain
@@ -17823,7 +17799,6 @@ forums
 fp
 fq
 fr
-freebsd
 fs
 ft
 ftp
@@ -17941,7 +17916,6 @@ ipsec
 ipv6
 iq
 ir
-irc
 ircd
 is
 isa // ISA proxy?
@@ -18010,7 +17984,6 @@ ky
 kz
 l
 la
-lab
 laboratories
 laboratorio
 laboratory
@@ -18033,7 +18006,6 @@ lm
 ln
 lo
 localhost
-log
 login
 logon
 logs
@@ -18081,7 +18053,6 @@ ml
 mm
 mn
 mo
-mob
 mobile
 moodle
 movil
@@ -18113,7 +18084,6 @@ nd
 ne
 nelson
 neon
-net
 netmail
 news
 nf
@@ -18139,7 +18109,6 @@ ns1
 ns2
 ns3
 nt
-ntp
 nu
 nv
 nw
@@ -18201,7 +18170,6 @@ pl
 pm
 pn
 po
-pop
 pop3
 portal
 postgresql
@@ -18318,7 +18286,6 @@ sj
 sk
 sl
 sm
-sms
 smtp
 sn
 so
@@ -18327,7 +18294,6 @@ solaris
 soporte
 sp // sharepoint?
 sq
-sql
 squirrel
 squirrelmail
 sr
@@ -18338,7 +18304,6 @@ staff
 staging
 stats
 su
-sun
 support
 sv
 sw
@@ -18378,7 +18343,6 @@ ty
 tz
 u
 ua
-uat
 ub
 uc
 ud
@@ -18428,7 +18392,6 @@ vn
 vnc
 vo
 vp
-vpn
 vpn1
 vpn2
 vpn3
@@ -18444,7 +18407,6 @@ vy
 vz
 w
 wa
-wap
 wb
 wc
 wd
@@ -18467,7 +18429,6 @@ wf
 wg
 wh
 wi
-win
 windows
 wj
 wk

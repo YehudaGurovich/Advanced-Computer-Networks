@@ -4,7 +4,9 @@ import socket
 import protocol
 
 
-def handle_client_request(current_socket: socket.socket, clients_names: dict, data: str) -> tuple:
+def handle_client_request(
+    current_socket: socket.socket, clients_names: dict, data: str
+) -> tuple:
     # Split the data into 3 parts depending on the command
     data_list = data.split(" ", 2)
     command = data_list[0]
@@ -74,8 +76,7 @@ def main():
     while True:
         read_list = client_sockets + [server_socket]
         ready_to_read, ready_to_write, _ = select.select(
-            read_list, client_sockets, []
-        )
+            read_list, client_sockets, [])
 
         for current_socket in ready_to_read:
             if current_socket is server_socket:
