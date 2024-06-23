@@ -2,30 +2,23 @@ import sys
 import parameters
 import time
 
-from typing import List
+from typing import List, Tuple
 from data import open_file
 
 from scapy.all import *
 
-input_string = sys.argv[1]
-print(f'The input string is: {input_string}')
 
-# def dns_filter(pkt: dict) -> bool:
-#     return "DNS" in pkt
-
-
-def primary_dns_servers() -> List[str]:
+def obtain_primary_dns_servers(input_domain: str) -> List[str]:
     response = dns_packet_response(
-        parameters.GOOGLE_DNS, input_string, parameters.SOA_QTYPE)
+        parameters.GOOGLE_DNS, input_domain, parameters.SOA_QTYPE)
 
-    # Print the full response
+    primary_dns_servers: List[str] = []
     if response and response.haslayer(DNS):
-        response.show()
-        primary_dns_servers = []
+        # response.show()
         if response[DNS].ancount > 0:
             for i in range(response[DNS].ancount):
                 record = response[DNS].an[i]
-                if record.type == parameters.SOA_QTYPE:
+                if record.type == parameters.SOA_NUM:
                     primary_dns_server = record.mname.decode()
                     primary_dns_servers.append(primary_dns_server)
 
@@ -33,6 +26,7 @@ def primary_dns_servers() -> List[str]:
                 print("Primary DNS Servers:")
                 for server in primary_dns_servers:
                     print(f"- {server}")
+                print()
             else:
                 print("No SOA records found.")
         else:
@@ -44,47 +38,59 @@ def primary_dns_servers() -> List[str]:
     return primary_dns_servers
 
 
-def obtain_wordlist() -> List[str]:
-    with open("combined_wordlist.txt", "r") as file:
-        wordlist = file.readlines()
-    return wordlist
+def current_time(start_time: time.time) -> Tuple[int, int]:
+    curr_time = time.time() - start_time
+    mins: int = int(curr_time // 60)
+    secs: int = int(curr_time % 60)
+    return mins, secs
 
 
-# def current_time() -> tuple:
-#     curr_time = time
+def all_words_query(primary_dns_server: str, input_domain: str) -> List[Tuple[str, List[str]]]:
+    wordlist: List[str] = open_file("combined_wordlist.txt")
+    total_counter = 0
+    start = time.time()
+    results: List[Tuple[str, List[str]]] = []
 
-
-def all_words_query() -> List[str]:
-    wordlist: List[str] = obtain_wordlist()
     for word in wordlist:
-        percent_total_counter = 0
-        start = time.time()
-    for word in wordlist:
-        t = time.time() - start
-        mins = int(t // 60)
-        secs = int(t % 60)
-        if percent_total_counter % 500 == 0 and percent_total_counter != 0:
+        mins, secs = current_time(start)
+        try:
+            percent = (total_counter * 100 / len(wordlist))
+        except ZeroDivisionError:
+            percent = 0
+        if total_counter % 500 == 0:
             print(
-                f"{(percent_total_counter * 100 / len(wordlist)):.2f}% - Time: {mins} minutes and {secs} seconds")
-        new_domain = f"{word}.{input_string}"
+                f"Progress: {percent:.2f}% - Time: {mins} minutes and {secs} seconds")
+        new_domain = f"{word}.{input_domain}"
 
-    return wordlist
+        IP_addresses = domain_IP_search(
+            primary_dns_server, new_domain, parameters.A_QTYPE)
+
+        if IP_addresses:
+            results.append((new_domain, IP_addresses))
+            print(
+                f"Progress: {percent:.2f}% | Time: {mins} minutes and {secs} seconds")
+            print(f">> Found IP-Address for {new_domain}")
+        total_counter += 1
+
+    mins, secs = current_time(start)
+    print(f"Final Time: {mins} minutes and {secs} seconds\n")
+
+    return results
 
 
-def word_IP_search(dns_dst: str, domain: str, query_type: str) -> List[str]:
-
+def domain_IP_search(dns_dst: str, domain: str, query_type: str) -> List[str]:
     response = dns_packet_response(
-        primary_dns_server, new_domain, parameters.A_QTYPE)
+        dns_dst, domain, query_type)
     IP_addresses: List[str] = []
     if response:
         for i in range(response[DNS].ancount):
-            if response[DNS].an[i].type == 1:  # code for A record
+            if response[DNS].an[i].type == parameters.A_NUM:
                 ip_address = response[DNS].an[i].rdata
                 IP_addresses.append(ip_address)
     return IP_addresses
 
 
-def dns_packet_response(dns_dst: str, domain: str, query_type: str) -> DNS:
+def dns_packet_response(dns_dst: str, domain: str, query_type: str) -> SndRcvList:
     # Create a DNS packet with SOA query
     dns_packet = IP(dst=dns_dst) / UDP(dport=parameters.DNS_PORT) / \
         DNS(rd=parameters.RD_BIT, qd=DNSQR(qname=domain, qtype=query_type))
@@ -97,38 +103,32 @@ def dns_packet_response(dns_dst: str, domain: str, query_type: str) -> DNS:
 
 def main():
 
-    primary_dns_servers = primary_dns_servers()
+    try:
+        input_domain = sys.argv[1]
+        # input_domain = "jct.ac.il"
+        print(f'The input domain is: {input_domain}')
+    except IndexError:
+        print("Please enter a domain name as an argument.")
+        exit()
 
-    percent_total_counter = 0
-    start = time.time()
-    for word in wordlist:
-        t = time.time() - start
-        mins = int(t // 60)
-        secs = int(t % 60)
-        if percent_total_counter % 500 == 0 and percent_total_counter != 0:
-            print(
-                f"{(percent_total_counter * 100 / len(wordlist)):.2f}% - Time: {mins} minutes and {secs} seconds")
-        new_domain = f"{word}.{input_string}"
-        response = dns_packet_response(
-            primary_dns_server, new_domain, parameters.A_QTYPE)
-        IP_addresses: list[str] = []
-        if response:
-            for i in range(response[DNS].ancount):
-                if response[DNS].an[i].type == 1:  # code for A record
-                    ip_address = response[DNS].an[i].rdata
-                    IP_addresses.append(ip_address)
-            if IP_addresses:
-                print(f"""{(percent_total_counter * 100 / len(wordlist)):.2f}% | Time: {mins} minutes and {secs} seconds |
-    IP Addresses for {new_domain}: {IP_addresses}""")
-        percent_total_counter += 1
-    t = time.time() - start
-    mins = int(t // 60)
-    secs = int(t % 60)
-    print(f"Final Time: {mins} minutes and {secs} seconds")
+    # Obtain primary DNS servers
+    primary_dns_servers = obtain_primary_dns_servers(input_domain)
+
+    # Result of all words query adding the domain to the input domain
+    result: List[Tuple[str, List[str]]] = []
+    for server in primary_dns_servers:
+        print(
+            f"Querying {server} for all words in the wordlist. Expected time: 20 minutes aprox.\n")
+        result += all_words_query(server, input_domain)
+
+    result = list(set(result))
+    if result:
+        print(f"We found {len(result)} domains with IP addresses.")
+        print(
+            list(f"IP Address(es) for {result[i][0]}: {result[i][1]}" for i in range(len(result))))
+        # for i in range(len(result)):
+        #     print(f"IP Address(es) for {result[i][0]}: {result[i][1]}")
 
 
-    # packet = sniff(lfilter=dns_filter, count=10,
-    #                prn=lambda x: x.summary())
-    # print(packet.show())
 if __name__ == "__main__":
     main()
