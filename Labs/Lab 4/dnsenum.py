@@ -2,7 +2,7 @@ import sys
 import parameters
 import time
 
-from typing import List, Tuple
+from typing import List, Tuple, Any
 from data import open_file
 
 from scapy.all import *
@@ -45,11 +45,11 @@ def current_time(start_time: time.time) -> Tuple[int, int]:
     return mins, secs
 
 
-def all_words_query(primary_dns_server: str, input_domain: str) -> List[Tuple[str, List[str]]]:
+def all_words_query(primary_dns_server: str, input_domain: str) -> List[Tuple[str, Tuple[str]]]:
     wordlist: List[str] = open_file("combined_wordlist.txt")
     total_counter = 0
     start = time.time()
-    results: List[Tuple[str, List[str]]] = []
+    results: List[Tuple[str, Tuple[str]]] = []
 
     for word in wordlist:
         mins, secs = current_time(start)
@@ -66,7 +66,7 @@ def all_words_query(primary_dns_server: str, input_domain: str) -> List[Tuple[st
             primary_dns_server, new_domain, parameters.A_QTYPE)
 
         if IP_addresses:
-            results.append((new_domain, IP_addresses))
+            results.append((new_domain, tuple(IP_addresses)))
             print(
                 f"Progress: {percent:.2f}% | Time: {mins} minutes and {secs} seconds")
             print(f">> Found IP-Address for {new_domain}")
@@ -118,17 +118,78 @@ def main():
     result: List[Tuple[str, List[str]]] = []
     for server in primary_dns_servers:
         print(
-            f"Querying {server} for all words in the wordlist. Expected time: 20 minutes aprox.\n")
+            f"Querying {server} For all words in the wordlist. Expected time for jct.ac.il: 20 minutes aprox.\n")
         result += all_words_query(server, input_domain)
 
     result = list(set(result))
     if result:
         print(f"We found {len(result)} domains with IP addresses.")
         print(
-            list(f"IP Address(es) for {result[i][0]}: {result[i][1]}" for i in range(len(result))))
+            '\n'.join(f"IP Address(es) for {item[0]}: {item[1]}" for item in result))
         # for i in range(len(result)):
         #     print(f"IP Address(es) for {result[i][0]}: {result[i][1]}")
 
 
 if __name__ == "__main__":
     main()
+
+"""Sample final output:
+We found 57 domains with IP addresses.
+IP Address(es) for cc.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for sap.jct.ac.il: ('10.1.135.25',)
+IP Address(es) for bi.jct.ac.il: ('10.1.11.44',)
+IP Address(es) for tftp.jct.ac.il: ('10.1.1.60',)
+IP Address(es) for sus.jct.ac.il: ('10.1.6.89',)
+IP Address(es) for wol.jct.ac.il: ('10.1.1.6',)
+IP Address(es) for secure.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for amp.jct.ac.il: ('10.1.105.1',)
+IP Address(es) for its.jct.ac.il: ('147.161.1.39',)
+IP Address(es) for ndp.jct.ac.il: ('147.161.1.45',)
+IP Address(es) for avi.jct.ac.il: ('147.161.1.46',)
+IP Address(es) for lev.jct.ac.il: ('147.161.1.113',)
+IP Address(es) for g.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for postgresql.jct.ac.il: ('10.1.6.51',)
+IP Address(es) for web.jct.ac.il: ('147.161.1.37',)
+IP Address(es) for api.jct.ac.il: ('147.161.1.55',)
+IP Address(es) for oracle.jct.ac.il: ('10.1.6.48',)
+IP Address(es) for backup.jct.ac.il: ('10.1.101.1',)
+IP Address(es) for oum.jct.ac.il: ('10.1.103.2',)
+IP Address(es) for vmm.jct.ac.il: ('10.1.102.21',)
+IP Address(es) for awx.jct.ac.il: ('10.1.1.70',)
+IP Address(es) for download.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for dns.jct.ac.il: ('147.161.1.4', '147.161.1.15')
+IP Address(es) for fsb.jct.ac.il: ('10.1.10.1',)
+IP Address(es) for ctf.jct.ac.il: ('10.1.37.90',)
+IP Address(es) for kms.jct.ac.il: ('10.1.6.45',)
+IP Address(es) for mail.jct.ac.il: ('147.161.1.36', '147.161.1.38', '147.161.1.29')
+IP Address(es) for idm.jct.ac.il: ('10.1.11.51',)
+IP Address(es) for smtp.jct.ac.il: ('147.161.1.29', '10.1.1.29', '147.161.1.36')
+IP Address(es) for support.jct.ac.il: ('147.161.1.39',)
+IP Address(es) for ns3.jct.ac.il: ('10.1.37.152',)
+IP Address(es) for pwd.jct.ac.il: ('10.1.11.11',)
+IP Address(es) for owa.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for vpl.jct.ac.il: ('129.159.150.173',)
+IP Address(es) for mda.jct.ac.il: ('10.1.1.30',)
+IP Address(es) for s.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for gw.jct.ac.il: ('10.1.1.254',)
+IP Address(es) for exchange.jct.ac.il: ('10.1.12.161',)
+IP Address(es) for omd.jct.ac.il: ('10.1.1.14',)
+IP Address(es) for tfs.jct.ac.il: ('10.1.11.42',)
+IP Address(es) for ca.jct.ac.il: ('10.1.12.100',)
+IP Address(es) for mail.jct.ac.il: ('147.161.1.29', '147.161.1.38', '147.161.1.36')
+IP Address(es) for vic.jct.ac.il: ('10.2.6.100',)
+IP Address(es) for imc.jct.ac.il: ('10.1.105.5',)
+IP Address(es) for nd.jct.ac.il: ('147.161.1.46',)
+IP Address(es) for vro.jct.ac.il: ('10.1.102.23',)
+IP Address(es) for ip.jct.ac.il: ('147.161.1.49',)
+IP Address(es) for zfs.jct.ac.il: ('10.1.37.100',)
+IP Address(es) for umm.jct.ac.il: ('10.1.1.99',)
+IP Address(es) for cmm.jct.ac.il: ('10.1.56.13',)
+IP Address(es) for moodle.jct.ac.il: ('129.159.130.77',)
+IP Address(es) for oz.jct.ac.il: ('10.2.16.11',)
+IP Address(es) for helpdesk.jct.ac.il: ('10.1.6.36',)
+IP Address(es) for tunnel.jct.ac.il: ('10.1.37.147', '10.1.37.146', '10.1.37.149')
+IP Address(es) for www.jct.ac.il: ('185.186.66.220',)
+IP Address(es) for hd.jct.ac.il: ('147.161.1.50',)
+IP Address(es) for efl.jct.ac.il: ('147.161.1.46',)
+"""

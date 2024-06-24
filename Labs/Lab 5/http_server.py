@@ -1,7 +1,7 @@
 import socket
 
 IP = 'localhost'
-PORT = 80
+PORT = 5500
 FIXED_RECEIVE_SIZE = 1024
 # PORT = 8080  # Use 8080 to avoid needing elevated permissions
 SOCKET_TIMEOUT = 2
