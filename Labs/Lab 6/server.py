@@ -1,21 +1,15 @@
 """Encrypted socket server implementation
-   Author:
-   Date:
+   Author: Yehuda Gurovich
+   Date: 15/07/2024
 """
 
 import socket
 import protocol
 
 
-def create_server_rsp(cmd):
+def create_server_rsp(cmd: str) -> str:
     """Based on the command, create a proper response"""
-    match cmd:
-        case "hello":
-            return "Hello, how can I help you?"
-        case "bye":
-            return "Goodbye"
-
-    return "Server response"
+    return f"{cmd} command received"
 
 
 def main():
@@ -60,10 +54,6 @@ def main():
         message = protocol.receive_data(client_socket)
         message = message.rsplit("#", 1)
 
-        # valid_msg, message = protocol.get_msg(client_socket)
-        # if not valid_msg:
-        #     print("Something went wrong with the length field")
-
         # Check if client's message is authentic
         # 1 - separate the message and the MAC
         encrypted_message, input_signature = (message[0], message[1])
@@ -95,13 +85,10 @@ def main():
         encrypted_response = protocol.symmetric_encryption(
             response, diffie_shared_secret)
 
-        server_message = f"{encrypted_response}#{response_signature}"
-        protocol.send_data(client_socket, server_message)
-
         # Send to client
         # Combine encrypted user's message to MAC, send to client
-        # msg = protocol.create_msg(message)
-        # client_socket.send(msg.encode())
+        server_message = f"{encrypted_response}#{response_signature}"
+        protocol.send_data(client_socket, server_message)
 
     print("Closing\n")
     client_socket.close()

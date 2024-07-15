@@ -1,13 +1,10 @@
-"""Encrypted socket client implementation
-   Author:
-   Date:
+"""Encrypted socket client implementation   
+   Author: Yehuda Gurovich
+   Date: 15/07/2024
 """
+
 import protocol
 import socket
-
-
-# RSA_PUBLIC_KEY = ?
-# RSA_PRIVATE_KEY = ?
 
 
 def main():
@@ -62,10 +59,7 @@ def main():
         message = f"{encrypted_input}#{input_signature}"
         protocol.send_data(my_socket, message)
 
-        # msg = protocol.create_msg(user_input)
-        # my_socket.send(msg.encode())
-
-        if user_input == 'EXIT':
+        if user_input.upper() == 'EXIT':
             break
 
         # Receive server's message

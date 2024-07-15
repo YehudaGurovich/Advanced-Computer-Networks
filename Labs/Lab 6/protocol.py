@@ -1,6 +1,6 @@
 """Encrypted sockets implementation
-   Author:
-   Date:
+   Author: Yehuda Gurovich
+   Date: 15/07/2024
 """
 
 import random
@@ -15,9 +15,6 @@ PRIME_BIT_SIZE = 32
 
 DIFFIE_HELLMAN_P = 151
 DIFFIE_HELLMAN_G = 223
-
-# RSA_P = ?
-# RSP_Q = ?
 
 
 def symmetric_encryption(input_data: str, key: int) -> str:
@@ -90,7 +87,7 @@ def send_data(my_socket: socket.socket, data: str) -> None:
     """Send data to the socket, following the protocol using a fixed length header"""
 
     # Log the data that is being sent
-    print(f"Sent: {data}")
+    # print(f"Sent: {data}")
 
     try:
         # Create the header
@@ -125,6 +122,7 @@ def receive_data(my_socket: socket.socket) -> str:
     data_length = int.from_bytes(header, byteorder="big")
 
     if header_size < len(header):
+        print("Something went wrong with the length field")
         raise RuntimeError(
             "Socket connection broken or incomplete header received")
 
@@ -137,7 +135,7 @@ def receive_data(my_socket: socket.socket) -> str:
         bytes_data.extend(packet)
     data = bytes_data.decode()
 
-    print(f"Received: {data}")
+    # print(f"Received: {data}")
     return data
 
 
@@ -205,18 +203,6 @@ def generate_large_prime(bit_length: int = PRIME_BIT_SIZE) -> int:
         if miller_rabin(num):
             return num
 
-
-# def create_msg(data):
-#     """Create a valid protocol message, with length field
-#     For example, if data = data = "hello world",
-#     then "11hello world" should be returned"""
-#     return
-
-
-# def get_msg(my_socket):
-#     """Extract message from protocol, without the length field
-#     If length field does not include a number, returns False, "Error" """
-#     return
 
 if __name__ == "__main__":
     # Example usage:
