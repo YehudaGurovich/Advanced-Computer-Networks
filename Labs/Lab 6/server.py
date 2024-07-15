@@ -9,6 +9,12 @@ import protocol
 
 def create_server_rsp(cmd):
     """Based on the command, create a proper response"""
+    match cmd:
+        case "hello":
+            return "Hello, how can I help you?"
+        case "bye":
+            return "Goodbye"
+
     return "Server response"
 
 
@@ -22,39 +28,80 @@ def main():
 
     # Diffie Hellman
     # 1 - choose private key
+    server_diffie_private_key = protocol.diffie_hellman_choose_private_key()
     # 2 - calc public key
+    server_diffie_public_key = protocol.diffie_hellman_calc_public_key(
+        server_diffie_private_key)
     # 3 - interact with client and calc shared secret
+    protocol.send_data(client_socket, str(server_diffie_public_key))
+    client_diffie_public_key = int(protocol.receive_data(client_socket))
+
+    diffie_shared_secret = protocol.diffie_hellman_calc_shared_secret(
+        client_diffie_public_key, server_diffie_private_key)
 
     # RSA
+    server_p = protocol.generate_large_prime(protocol.PRIME_BIT_SIZE)
+    server_q = protocol.generate_large_prime(protocol.PRIME_BIT_SIZE)
     # Pick public key
     # Calculate matching private key
+    server_pq = server_p * server_q
+    server_public_key, server_private_key = protocol.generate_rsa_keys(
+        server_p, server_q)
+
     # Exchange RSA public keys with client
+    data = f"{server_public_key[0]}#{server_public_key[1]}"
+    protocol.send_data(client_socket, data)
+    client_public_key_str = protocol.receive_data(client_socket).rsplit("#", 1)
+    client_public_key = (
+        int(client_public_key_str[0]), int(client_public_key_str[1]))
 
     while True:
         # Receive client's message
-        valid_msg, message = protocol.get_msg(client_socket)
-        if not valid_msg:
-            print("Something went wrong with the length field")
+        message = protocol.receive_data(client_socket)
+        message = message.rsplit("#", 1)
+
+        # valid_msg, message = protocol.get_msg(client_socket)
+        # if not valid_msg:
+        #     print("Something went wrong with the length field")
 
         # Check if client's message is authentic
         # 1 - separate the message and the MAC
+        encrypted_message, input_signature = (message[0], message[1])
         # 2 - decrypt the message
+        decrypted_message = protocol.symmetric_encryption(
+            encrypted_message, diffie_shared_secret)
         # 3 - calc hash of message
+        input_hash = protocol.calc_hash(decrypted_message)
         # 4 - use client's public RSA key to decrypt the MAC and get the hash
+        verified_hash = protocol.calc_signature(
+            int(input_signature), client_public_key[0], client_public_key[1])
         # 5 - check if both calculations end up with the same result
-
-        if message == "EXIT":
+        if input_hash != verified_hash:
+            print("Client's message is not authentic")
             break
 
-        # Create response. The response would be the echo of the client's message
+        if decrypted_message.upper() == "EXIT":
+            break
 
+        print(f"Client's message: {decrypted_message}")
+
+        # Create response. The response would be the echo of the client's message
+        response = create_server_rsp(decrypted_message.lower())
         # Encrypt
+        response_hash = protocol.calc_hash(response)
+        response_signature = protocol.calc_signature(
+            response_hash, server_private_key[0], server_private_key[1])
         # apply symmetric encryption to the server's message
+        encrypted_response = protocol.symmetric_encryption(
+            response, diffie_shared_secret)
+
+        server_message = f"{encrypted_response}#{response_signature}"
+        protocol.send_data(client_socket, server_message)
 
         # Send to client
         # Combine encrypted user's message to MAC, send to client
-        msg = protocol.create_msg(message)
-        client_socket.send(msg.encode())
+        # msg = protocol.create_msg(message)
+        # client_socket.send(msg.encode())
 
     print("Closing\n")
     client_socket.close()
