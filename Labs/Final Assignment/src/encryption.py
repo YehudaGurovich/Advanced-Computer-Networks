@@ -26,6 +26,9 @@ def generate_column_cipher_encryption(key: str, message: str) -> str:
     return encrypted_message
 
 
+def serialize_with_pickle():
+    pass
+
 if __name__ == "__main__":
     PARAMETERS_FILE = "parameters.json"
     params = open_parameters(PARAMETERS_FILE)
@@ -33,4 +36,4 @@ if __name__ == "__main__":
     message = params["message"]
     encrypted = generate_column_cipher_encryption(key, message)
     print(f"Encrypted message: {encrypted}")
-    write_to_text_file("encrypted.txt", encrypted)
+    # write_to_text_file("encrypted.txt", encrypted)

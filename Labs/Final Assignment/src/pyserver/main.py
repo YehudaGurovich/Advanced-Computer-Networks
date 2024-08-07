@@ -14,7 +14,7 @@ def index():
 
 @app.route("/download")
 def download_file():
-    file_path = "encrypted.txt"
+    file_path = "../encrypted.txt"
     return send_file(file_path, as_attachment=True)
 
 
