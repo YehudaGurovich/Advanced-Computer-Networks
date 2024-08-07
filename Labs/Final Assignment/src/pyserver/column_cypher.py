@@ -1,35 +1,36 @@
-# Filename: column_cypher.py
+from utils import open_parameters, write_to_text_file
 
-def generate_column_cypher(key: str, message: str) -> str:
+
+def generate_column_cipher(key: str, message: str) -> str:
     """
-    Generate a column cypher from a key and a message
+    Generate a columnar cipher from a key and a message.
     """
-    # Generate the key
+    # Pad the message
+    key_length = len(key)
+    padded_message = message.replace(" ", "*")
+    padding_length = (key_length - len(padded_message) %
+                      key_length) % key_length
+    padded_message += "*" * padding_length
 
-    message = message.replace(" ", "*")
-    if len(message) % len(key) != 0:
-        message += "*" * (len(key) - len(message) % len(key))
+    # Create the matrix
+    matrix = [padded_message[i:i+key_length]
+              for i in range(0, len(padded_message), key_length)]
 
-    message_list = [message[i:i+len(key)]
-                    for i in range(0, len(message), len(key))]
+    # Create sorted column indices
+    column_indices = sorted(range(key_length), key=lambda k: key[k])
 
-    unsorted_enum_key = list(enumerate(key))
+    # Reorder columns and join
+    encrypted_message = ''.join(
+        ''.join(row[i] for row in matrix) for i in column_indices)
 
-    zipped = list(zip(*message_list))
-
-    sorted_enum_key = list(enumerate(sorted(key)))
-
-    reordered_key = [
-        (x[0], y[0]) for x in sorted_enum_key for y in unsorted_enum_key if x[1] == y[1]]
-
-    encrypted_message = [zipped[reordered_key[j][0]] for i in range(
-        len(zipped)) for j in range(len(reordered_key)) if reordered_key[j][1] == i]
-
-    return "".join("".join(row) for row in encrypted_message)
-    # print("".join("".join(row) for row in zip(*message_list)))
+    return encrypted_message
 
 
 if __name__ == "__main__":
-    key = "CYPHER"
-    message = "THIS IS AN IMPORTANT ENCRYPTED MESSAGE! BEWARE"
-    print(generate_column_cypher(key, message))
+    PARAMETERS_FILE = "parameters.json"
+    params = open_parameters(PARAMETERS_FILE)
+    key = params["key"]
+    message = params["message"]
+    encrypted = generate_column_cipher(key, message)
+    print(f"Encrypted message: {encrypted}")
+    write_to_text_file("encrypted.txt", encrypted)
