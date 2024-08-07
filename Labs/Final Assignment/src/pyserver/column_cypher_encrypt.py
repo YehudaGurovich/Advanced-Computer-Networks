@@ -1,9 +1,9 @@
 from utils import open_parameters, write_to_text_file
 
 
-def generate_column_cipher(key: str, message: str) -> str:
+def generate_column_cipher_encryption(key: str, message: str) -> str:
     """
-    Generate a columnar cipher from a key and a message.
+    Generate a columnar cipher_encryption from a key and a message.
     """
     # Pad the message
     key_length = len(key)
@@ -31,6 +31,6 @@ if __name__ == "__main__":
     params = open_parameters(PARAMETERS_FILE)
     key = params["key"]
     message = params["message"]
-    encrypted = generate_column_cipher(key, message)
+    encrypted = generate_column_cipher_encryption(key, message)
     print(f"Encrypted message: {encrypted}")
     write_to_text_file("encrypted.txt", encrypted)
