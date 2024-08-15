@@ -33,18 +33,12 @@ def handle_client(client_socket, client_address):
         content_disposition = ""
     elif path == '/start':
         file_path = "create_exec.py"
-    # if os.path.isfile(file_path):
         with open(file_path, 'rb') as file:
             file_content = file.read()
         response_body = file_content
         status = "200 OK"
         content_type = "application/octet-stream"  # Generic binary type
         content_disposition = f"attachment; filename={os.path.basename(file_path)}"
-        # else:
-        #     response_body = "<html><body><h1>404 Not Found</h1></body></html>"
-        #     status = "404 Not Found"
-        #     content_type = "text/html"
-        #     content_disposition = ""
     else:
         response_body = "<html><body><h1>404 Not Found</h1></body></html>"
         print(f"Page not found: {path}")
