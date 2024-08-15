@@ -8,13 +8,13 @@ app = Flask(__name__)
 def index():
     return '''
         <h1>Are you sure you want to download this file?</h1>
-        <a href="/download">Download File</a>
+        <a href="/download_file">Download File</a>
     '''
 
 
-@app.route("/download")
+@app.route("/download_file")
 def download_file():
-    file_path = "../encrypted.txt"
+    file_path = "../ctf2.pcap"
     return send_file(file_path, as_attachment=True)
 
 
