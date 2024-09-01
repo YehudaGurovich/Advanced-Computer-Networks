@@ -1,6 +1,11 @@
 import socket
 import threading
 import os
+from utils import generate_SecretRoute
+from encryption import serialize_with_pickle
+from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field
+
+import pickle
 
 
 def handle_client(client_socket, client_address):
@@ -15,23 +20,42 @@ def handle_client(client_socket, client_address):
     request_line = request_lines[0]
     method, path, _ = request_line.split()
 
+    # Parse headers
+    headers = {}
+    for line in request_lines[1:]:
+        if ': ' in line:
+            header, value = line.split(': ', 1)
+            headers[header] = value
+
+    # Check for User-Agent
+    user_agent = headers.get('User-Agent', '')
+
     print(f"Method: {method}")
     print(f"Path: {path}")
 
     # Prepare the response
     if path == '/':
-        response_body = "<html><body><h1>Welcome to the Home Page</h1></body></html>"
         print("Serving home page")
         status = "200 OK"
         content_type = "text/html"
         content_disposition = ""
+        response_body = generate_home_page()
+    # Check if the request is from a command-line or script-based environment
+        if any(term in user_agent.lower() for term in ["curl", "wget", "powershell", "python-requests"]):
+            # Adding custom field in the response
+            print("Adding secret field")
+            # curl_secret = serialize_with_pickle(generate_SecretRoute())
+            curl_secret = add_secret_field()
+            response_body += f"\nPickle: {curl_secret}"
+
     elif path == '/secretmission':
-        response_body = "<html><body><h1>Secret Mission</h1><p>This is a secret mission page.</p></body></html><a href='/start'>START</a>"
         print("Serving secret mission page")
         status = "200 OK"
         content_type = "text/html"
         content_disposition = ""
-    elif path == '/start':
+        response_body = generate_secret_mission_page()
+
+    elif path == '/secretfile':
         file_path = "create_exec.py"
         with open(file_path, 'rb') as file:
             file_content = file.read()
@@ -39,12 +63,18 @@ def handle_client(client_socket, client_address):
         status = "200 OK"
         content_type = "application/octet-stream"  # Generic binary type
         content_disposition = f"attachment; filename={os.path.basename(file_path)}"
+
     else:
         response_body = "<html><body><h1>404 Not Found</h1></body></html>"
         print(f"Page not found: {path}")
         status = "404 Not Found"
         content_type = "text/html"
         content_disposition = ""
+
+        # print(
+        #     f"\nPickle: {custom_field}")
+        # print(dir(pickle.loads(custom_field)))
+        # print(pickle.loads(custom_field)._SecretRoute__route)
 
     # Build the HTTP response
     response_header = (

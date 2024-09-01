@@ -1,5 +1,5 @@
 {
-	"key": "CYPHER",
-	"message": "THIS IS AN IMPORTANT ENCRYPTED MESSAGE! BEWARE!",
-	"encrypted_message_file_path": "encrypted_message.txt"
+	"key": "RAVEN",
+	"encrypted_message_file_path": "encrypted_message.txt",
+	"hidden_web_page_route": "secretmission"
 }

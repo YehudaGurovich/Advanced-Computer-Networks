@@ -1,4 +1,5 @@
-from utils import open_parameters, write_to_text_file
+from utils import open_json_file
+import pickle
 
 
 def generate_column_cipher_encryption(key: str, message: str) -> str:
@@ -26,12 +27,16 @@ def generate_column_cipher_encryption(key: str, message: str) -> str:
     return encrypted_message
 
 
-def serialize_with_pickle():
-    pass
+def serialize_with_pickle(message: str) -> bytes:
+    """
+    Serialize a message using pickle.
+    """
+    return pickle.dumps(message)
+
 
 if __name__ == "__main__":
     PARAMETERS_FILE = "parameters.json"
-    params = open_parameters(PARAMETERS_FILE)
+    params = open_json_file(PARAMETERS_FILE)
     key = params["key"]
     message = params["message"]
     encrypted = generate_column_cipher_encryption(key, message)
