@@ -1,11 +1,22 @@
 import json
+import sys
+import os
 
 
-def open_json_file(filename: str) -> dict:
-    """
-    Opens the json_file.json file and return its contents as a dictionary.
-    """
-    with open(filename, "r") as file:
+def resource_path(relative_path):
+    """ Get the absolute path to a resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        # Accessing directly from the script
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+def open_json_file(filename):
+    with open(resource_path(filename), "r") as file:
         return json.load(file)
 
 
