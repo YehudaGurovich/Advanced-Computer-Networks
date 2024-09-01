@@ -4,7 +4,6 @@ import threading
 import random
 import string
 import sys
-import struct
 from base64 import b64encode
 from scapy.all import RandMAC, RandIP, RandShort
 from encryption import generate_column_cipher_encryption
@@ -16,7 +15,7 @@ NUMBER_OF_PACKETS = 30
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 9999
 CLIENT_PORT = 8888
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 32
 
 
 MESSAGES = open_json_file("messages.json")
