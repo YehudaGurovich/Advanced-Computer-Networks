@@ -1,11 +1,9 @@
 import socket
 import threading
 import os
-from utils import generate_SecretRoute
-from encryption import serialize_with_pickle
 from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field
 
-import pickle
+# USE IF RUNNING ON LOCALHOST
 
 
 def handle_client(client_socket, client_address):
@@ -51,7 +49,7 @@ def handle_client(client_socket, client_address):
             print("Adding secret field")
             # curl_secret = serialize_with_pickle(generate_SecretRoute())
             curl_secret = add_secret_field()
-            response_body += f"\nPickle: {curl_secret}"
+            response_body += f"\n{curl_secret}"
 
     elif path == '/secretmission':
         print("Serving secret mission page")
@@ -123,6 +121,6 @@ def start_server(host, port):
 
 
 if __name__ == "__main__":
-    HOST = os.environ.get("HOST", "0.0.0.0")
-    PORT = int(os.environ.get("PORT", 8080))
+    HOST = "localhost"
+    PORT = 8080
     start_server(HOST, PORT)

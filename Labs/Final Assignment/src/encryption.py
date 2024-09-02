@@ -37,8 +37,8 @@ def serialize_with_pickle(message: str) -> bytes:
 if __name__ == "__main__":
     PARAMETERS_FILE = "parameters.json"
     params = open_json_file(PARAMETERS_FILE)
-    key = params["key"]
-    message = params["message"]
+    key = params["KEY"]
+    message = "This is a secret message"
     encrypted = generate_column_cipher_encryption(key, message)
     print(f"Encrypted message: {encrypted}")
     # write_to_text_file("encrypted.txt", encrypted)

@@ -1,5 +1,11 @@
 {
 	"key": "RAVEN",
 	"encrypted_message_file_path": "encrypted_message.txt",
-	"hidden_web_page_route": "secretmission"
+	"hidden_web_page_route": "secretmission",
+	"split_length": 12,
+	"total_number_of_packets": 30,
+	"server_ip": "127.0.0.1",
+	"server_port": 9999,
+	"client_port": 8888,
+	"buffer_size": 256
 }

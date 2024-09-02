@@ -3,11 +3,9 @@ import threading
 import os
 import logging
 from google.cloud import logging as cloud_logging
-# from utils import generate_SecretRoute
-# from encryption import serialize_with_pickle
 from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field
 
-# import pickle
+# USE IF RUNNING ON CLOUD
 
 # Initialize Cloud Logging
 client = cloud_logging.Client()
@@ -57,7 +55,7 @@ def handle_client(client_socket, client_address):
             if any(term in user_agent.lower() for term in ["curl", "wget", "powershell", "python-requests"]):
                 logger.info("Adding secret field")
                 curl_secret = add_secret_field()
-                response_body += f"{curl_secret}"
+                response_body += f"\n{curl_secret}"
 
         elif path == '/secretmission':
             logger.info("Serving secret mission page")
@@ -74,6 +72,9 @@ def handle_client(client_socket, client_address):
             status = "200 OK"
             content_type = "application/octet-stream"
             content_disposition = f"attachment; filename={os.path.basename(file_path)}"
+
+        elif path == '/finalmessage':
+            pass
 
         else:
             response_body = "<html><body><h1>404 Not Found</h1></body></html>"

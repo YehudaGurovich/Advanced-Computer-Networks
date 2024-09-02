@@ -7,20 +7,19 @@ from base64 import b64encode
 from encryption import generate_column_cipher_encryption
 from utils import open_json_file
 
-# Constants
-SPLIT_LENGTH = 12
-TOTAL_NUMBER_OF_PACKETS = 30
-SERVER_IP = '127.0.0.1'
-SERVER_PORT = 9999
-CLIENT_PORT = 8888
-BUFFER_SIZE = 256  # Increased buffer size for larger packets
-
 # Event to synchronize server and client
 ready_to_receive = threading.Event()
 
 # Load messages and parameters
 MESSAGES = open_json_file("messages.json")
 PARAMETERS = open_json_file("parameters.json")
+
+SPLIT_LENGTH = PARAMETERS["split_length"]
+TOTAL_NUMBER_OF_PACKETS = PARAMETERS["total_number_of_packets"]
+SERVER_IP = PARAMETERS["server_ip"]
+SERVER_PORT = PARAMETERS["server_port"]
+CLIENT_PORT = PARAMETERS["client_port"]
+BUFFER_SIZE = PARAMETERS["buffer_size"]
 
 
 def create_packets():
@@ -101,7 +100,7 @@ def start_client():
                 packet, _ = udp_socket.recvfrom(BUFFER_SIZE)
                 received_packets.append(packet.decode())
                 # print(f"Received: {packet.decode()}")
-                print("Packet received")
+                # print("Packet received")
             except socket.timeout:
                 print("Timeout occurred, continuing...")
 

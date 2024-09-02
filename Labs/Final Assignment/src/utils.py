@@ -32,13 +32,3 @@ def write_to_text_file(filename: str, content: str) -> None:
 
 PARAMETERS = open_json_file("parameters.json")
 MESSAGES = open_json_file("messages.json")
-
-
-class SecretRoute:
-    def __init__(self, route) -> None:
-        self.__route: str = route
-
-
-def generate_SecretRoute() -> SecretRoute:
-    return SecretRoute(MESSAGES["secret_route_found"].format(
-        PARAMETERS["hidden_web_page_route"]))
