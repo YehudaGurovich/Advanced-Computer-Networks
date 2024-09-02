@@ -123,6 +123,6 @@ def start_server(host, port):
 
 
 if __name__ == "__main__":
-    HOST = "localhost"
-    PORT = 8000
+    HOST = os.environ.get("HOST", "0.0.0.0")
+    PORT = int(os.environ.get("PORT", 8080))
     start_server(HOST, PORT)
