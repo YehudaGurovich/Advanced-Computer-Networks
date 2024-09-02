@@ -1,7 +1,7 @@
 from utils import open_json_file
 
 
-CONTENT = open_json_file("parameters.json")
+CONTENT = open_json_file("messages.json")
 STYLES = open_json_file("styles.json")
 
 

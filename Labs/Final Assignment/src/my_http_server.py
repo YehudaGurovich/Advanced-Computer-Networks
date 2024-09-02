@@ -18,7 +18,12 @@ def handle_client(client_socket, client_address):
     # Parse the request
     request_lines = request_data.split('\r\n')
     request_line = request_lines[0]
-    method, path, _ = request_line.split()
+    parts = request_line.split()
+    if len(parts) != 3:
+        # Handle the error, e.g., by logging an error message or sending a response
+        print("Invalid request line:", request_line)
+        return
+    method, path, _ = parts
 
     # Parse headers
     headers = {}
@@ -56,7 +61,7 @@ def handle_client(client_socket, client_address):
         response_body = generate_secret_mission_page()
 
     elif path == '/secretfile':
-        file_path = "create_exec.py"
+        file_path = "dist/packets.exe"
         with open(file_path, 'rb') as file:
             file_content = file.read()
         response_body = file_content
