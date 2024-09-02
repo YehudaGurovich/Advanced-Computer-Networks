@@ -1,7 +1,7 @@
 import socket
 import threading
 import os
-from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field
+from local_generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field, generate_final_message_page
 
 # USE IF RUNNING ON LOCALHOST
 
@@ -66,6 +66,13 @@ def handle_client(client_socket, client_address):
         status = "200 OK"
         content_type = "application/octet-stream"  # Generic binary type
         content_disposition = f"attachment; filename={os.path.basename(file_path)}"
+
+    elif path == '/finalmessage':
+        print("Serving final message page")
+        status = "200 OK"
+        content_type = "text/html"
+        content_disposition = ""
+        response_body = generate_final_message_page()
 
     else:
         response_body = "<html><body><h1>404 Not Found</h1></body></html>"

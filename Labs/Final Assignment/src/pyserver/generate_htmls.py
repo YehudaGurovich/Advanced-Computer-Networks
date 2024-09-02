@@ -59,5 +59,22 @@ def generate_secret_mission_page():
     """
 
 
+def generate_final_message_page():
+    style_tag = generate_style_tag(STYLES)
+    return f"""
+    <html>
+        <head>
+            <title>Final Message</title>
+            {style_tag}
+        </head>
+        <body>
+            <div class="container" style="padding-top: 20px;">
+                {CONTENT['final_message']}
+            </div>
+        </body>
+    </html>
+    """
+
+
 def add_secret_field():
     return CONTENT['curl_secret']

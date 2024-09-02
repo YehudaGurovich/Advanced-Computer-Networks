@@ -3,7 +3,7 @@ import threading
 import os
 import logging
 from google.cloud import logging as cloud_logging
-from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field
+from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field, generate_final_message_page
 
 # USE IF RUNNING ON CLOUD
 
@@ -74,7 +74,26 @@ def handle_client(client_socket, client_address):
             content_disposition = f"attachment; filename={os.path.basename(file_path)}"
 
         elif path == '/finalmessage':
-            pass
+            logger.info("Serving final message page")
+            status = "200 OK"
+            content_type = "text/html"
+            content_disposition = ""
+            response_body = generate_final_message_page()
+
+        elif path == '/victor_blackwood.jpg':
+            logger.info("Serving Victor Blackwood image")
+            try:
+                with open('victor_blackwood.jpg', 'rb') as file:
+                    response_body = file.read()
+                status = "200 OK"
+                content_type = "image/jpeg"
+                content_disposition = ""
+            except FileNotFoundError:
+                logger.error("Image file not found")
+                response_body = b"<html><body><h1>404 Not Found</h1></body></html>"
+                status = "404 Not Found"
+                content_type = "text/html"
+                content_disposition = ""
 
         else:
             response_body = "<html><body><h1>404 Not Found</h1></body></html>"
