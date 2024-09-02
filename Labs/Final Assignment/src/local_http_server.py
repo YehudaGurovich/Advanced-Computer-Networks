@@ -6,7 +6,10 @@ from local_generate_htmls import generate_home_page, generate_secret_mission_pag
 from utils import PARAMETERS
 
 
-def handle_client(client_socket, client_address):
+def handle_client(client_socket: socket, client_address: tuple) -> None:
+    """
+    Handle a client connection for the local HTTP server
+    """
     print(f"\nNew connection from {client_address}")
 
     # Receive the request data
@@ -19,7 +22,7 @@ def handle_client(client_socket, client_address):
     request_line = request_lines[0]
     parts = request_line.split()
     if len(parts) != 3:
-        # Handle the error, e.g., by logging an error message or sending a response
+        # Handle the error
         print("Invalid request line:", request_line)
         return
     method, path, _ = parts
@@ -45,11 +48,9 @@ def handle_client(client_socket, client_address):
         content_type = "text/html"
         content_disposition = ""
         response_body = generate_home_page()
-    # Check if the request is from a command-line or script-based environment
+        # Check if the request is from a command-line or script-based environment
         if any(term in user_agent.lower() for term in ["curl", "wget", "powershell", "python-requests"]):
-            # Adding custom field in the response
             print("Adding secret field")
-            # curl_secret = serialize_with_pickle(generate_SecretRoute())
             curl_secret = add_secret_field()
             response_body += f"\n{curl_secret}"
 
@@ -61,12 +62,12 @@ def handle_client(client_socket, client_address):
         response_body = generate_secret_mission_page()
 
     elif path == '/secretfile':
-        file_path = "dist/packets.exe"
+        file_path = "packets.exe"
         with open(file_path, 'rb') as file:
             file_content = file.read()
         response_body = file_content
         status = "200 OK"
-        content_type = "application/octet-stream"  # Generic binary type
+        content_type = "application/octet-stream"
         content_disposition = f"attachment; filename={os.path.basename(file_path)}"
 
     elif path == '/finalmessage':
@@ -124,7 +125,10 @@ def handle_client(client_socket, client_address):
     print(f"Connection closed for {client_address}")
 
 
-def start_server(host, port):
+def start_server(host: str, port: str) -> None:
+    """
+    Start and handle the local HTTP server
+    """
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((host, port))

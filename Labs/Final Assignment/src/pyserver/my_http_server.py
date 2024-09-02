@@ -5,7 +5,7 @@ import os
 import logging
 from google.cloud import logging as cloud_logging
 from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field, generate_final_message_page
-
+from utils import PARAMETERS
 
 # Initialize Cloud Logging
 client = cloud_logging.Client()
@@ -16,12 +16,16 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def handle_client(client_socket, client_address):
+def handle_client(client_socket: socket, client_address: tuple) -> None:
+    """
+    Handle a client connection for the local HTTP server
+    """
     logger.info(f"New connection from {client_address}")
 
     try:
         # Receive the request data
-        request_data = client_socket.recv(1024).decode('utf-8')
+        request_data = client_socket.recv(
+            PARAMETERS["socket_recv_size"]).decode('utf-8')
         logger.info(f"Received request:\n{request_data}")
 
         # Parse the request
@@ -29,6 +33,7 @@ def handle_client(client_socket, client_address):
         request_line = request_lines[0]
         parts = request_line.split()
         if len(parts) != 3:
+            # Handle the error
             logger.error(f"Invalid request line: {request_line}")
             return
         method, path, _ = parts
@@ -133,11 +138,14 @@ def handle_client(client_socket, client_address):
         logger.info(f"Connection closed for {client_address}")
 
 
-def start_server(host, port):
+def start_server(host: str, port: str) -> None:
+    """
+    Start and handle the local HTTP server
+    """
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((host, port))
-    server_socket.listen(5)
+    server_socket.listen(PARAMETERS["listen_time"])
 
     logger.info(f"Server listening on {host}:{port}")
 
@@ -149,6 +157,6 @@ def start_server(host, port):
 
 
 if __name__ == "__main__":
-    HOST = os.environ.get("HOST", "0.0.0.0")
-    PORT = int(os.environ.get("PORT", 8080))
+    HOST = os.environ.get(PARAMETERS["host"], PARAMETERS["ip"])
+    PORT = int(os.environ.get(PARAMETERS["port"], PARAMETERS["website_port"]))
     start_server(HOST, PORT)

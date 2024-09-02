@@ -68,7 +68,7 @@ Participants obtain an encrypted message from the network traffic.
 
 ### Relevant Course Material & Other Tools and Techniques Used
 
-- **Topic 1**: Working with _executable_ files
+- **Topic 1**: Creating _executable_ files using _pyinstaller_ in python
 - **Topic 2**: Using _Wireshark_ for network analysis
 - **Topic 3**: Understanding the _UDP_ protocol and packet analysis
 - **Topic 4**: Performing _MITM attacks_ to capture network traffic

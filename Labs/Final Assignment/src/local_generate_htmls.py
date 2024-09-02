@@ -1,11 +1,14 @@
 from utils import open_json_file
 
 
-CONTENT = open_json_file("messages.json")
+MESSAGES = open_json_file("messages.json")
 STYLES = open_json_file("styles.json")
 
 
-def generate_style_tag(styles):
+def generate_style_tag(styles: dict) -> str:
+    """
+    Generate the style tag for the HTML page
+    """
     return f"""
     <style>
         body {{{styles.get('body', '')}}}
@@ -18,10 +21,11 @@ def generate_style_tag(styles):
     </style>
     """
 
-# Generate the response body for the home page
 
-
-def generate_home_page():
+def generate_home_page() -> str:
+    """
+    Generate the response body for the home page
+    """
     style_tag = generate_style_tag(STYLES)
     return f"""
     <html>
@@ -31,18 +35,19 @@ def generate_home_page():
         </head>
         <body>
             <div class="container">
-                {CONTENT['welcome_message']}
-                {CONTENT['about_section']}
-                {CONTENT['services_offered']}
+                {MESSAGES['welcome_message']}
+                {MESSAGES['about_section']}
+                {MESSAGES['services_offered']}
             </div>
         </body>
     </html>
     """
 
-# Generate the response body for the secret mission page
 
-
-def generate_secret_mission_page():
+def generate_secret_mission_page() -> str:
+    """
+    Generate the response body for the secret mission page
+    """
     style_tag = generate_style_tag(STYLES)
     return f"""
     <html>
@@ -52,14 +57,17 @@ def generate_secret_mission_page():
         </head>
         <body>
             <div class="container">
-                {CONTENT['message']}
+                {MESSAGES['message']}
             </div>
         </body>
     </html>
     """
 
 
-def generate_final_message_page():
+def generate_final_message_page() -> str:
+    """
+    Generate the response body for the final message page
+    """
     style_tag = generate_style_tag(STYLES)
     return f"""
     <html>
@@ -69,12 +77,15 @@ def generate_final_message_page():
         </head>
         <body>
             <div class="container">
-                {CONTENT['final_message']}
+                {MESSAGES['final_message']}
             </div>
         </body>
     </html>
     """
 
 
-def add_secret_field():
-    return CONTENT['curl_secret']
+def add_secret_field() -> str:
+    """
+    Add the secret field to the response body
+    """
+    return MESSAGES['curl_secret']

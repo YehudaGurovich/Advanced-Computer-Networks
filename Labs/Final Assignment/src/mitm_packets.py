@@ -27,6 +27,9 @@ MAX_WAIT_TIME = PARAMETERS["max_wait_time"]
 
 
 def create_message_parts() -> List[str]:
+    """
+    Creates the message parts to be sent in the packets
+    """
     column_cipher_message = generate_column_cipher_encryption(
         PARAMETERS["key"], MESSAGES["column_cipher_message"]).encode()
 
@@ -94,6 +97,9 @@ def create_packets() -> List[Packet]:
 
 
 def start_server():
+    """
+    Starts the server and sends the packets
+    """
     packets = create_packets()
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_socket:
         udp_socket.bind((SERVER_IP, SERVER_PORT))
@@ -108,6 +114,9 @@ def start_server():
 
 
 def start_client():
+    """
+    Starts the client and receives the packets
+    """
     time.sleep(1)
     ready_to_receive.set()
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_socket:

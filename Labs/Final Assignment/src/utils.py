@@ -3,8 +3,12 @@ import sys
 import os
 
 
-def resource_path(relative_path):
-    """ Get the absolute path to a resource, works for dev and for PyInstaller """
+def resource_path(relative_path: str) -> str:
+    """
+    Get the absolute path to a resource, works for dev and for PyInstaller
+    Needed for PyInstaller so used in local development as well to avoid issues.
+    Does not work in Google Cloud.
+    """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
@@ -15,19 +19,12 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-def open_json_file(filename):
+def open_json_file(filename: str) -> json:
+    """
+    Opens a JSON file and returns its content.
+    """
     with open(resource_path(filename), "r") as file:
         return json.load(file)
-
-
-def write_to_text_file(filename: str, content: str) -> None:
-    """
-    Writes content to a text file.
-    """
-    with open(filename, "w") as file:
-        file.write(content)
-
-    print(f"Message has been written to {filename}")
 
 
 PARAMETERS = open_json_file("parameters.json")
