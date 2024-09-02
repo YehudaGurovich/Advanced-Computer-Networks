@@ -1,16 +1,17 @@
+# USE THIS FILE IF RUNNING ON LOCALHOST
 import socket
 import threading
 import os
 from local_generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field, generate_final_message_page
-
-# USE IF RUNNING ON LOCALHOST
+from utils import PARAMETERS
 
 
 def handle_client(client_socket, client_address):
     print(f"\nNew connection from {client_address}")
 
     # Receive the request data
-    request_data = client_socket.recv(1024).decode('utf-8')
+    request_data = client_socket.recv(
+        PARAMETERS["socket_recv_size"]).decode('utf-8')
     print(f"Received request:\n{request_data}")
 
     # Parse the request
@@ -31,6 +32,7 @@ def handle_client(client_socket, client_address):
             headers[header] = value
 
     # Check for User-Agent
+    # Localhost requires 'User-Agent' instead of 'user-agent'
     user_agent = headers.get('User-Agent', '')
 
     print(f"Method: {method}")
@@ -74,17 +76,27 @@ def handle_client(client_socket, client_address):
         content_disposition = ""
         response_body = generate_final_message_page()
 
+    elif path == '/victor_blackwood.jpg':
+        print("Serving Victor Blackwood image")
+        try:
+            with open('victor_blackwood.jpg', 'rb') as file:
+                response_body = file.read()
+            status = "200 OK"
+            content_type = "image/jpeg"
+            content_disposition = ""
+        except FileNotFoundError:
+            print("Image file not found")
+            response_body = b"<html><body><h1>404 Not Found</h1></body></html>"
+            status = "404 Not Found"
+            content_type = "text/html"
+            content_disposition = ""
+
     else:
         response_body = "<html><body><h1>404 Not Found</h1></body></html>"
         print(f"Page not found: {path}")
         status = "404 Not Found"
         content_type = "text/html"
         content_disposition = ""
-
-        # print(
-        #     f"\nPickle: {custom_field}")
-        # print(dir(pickle.loads(custom_field)))
-        # print(pickle.loads(custom_field)._SecretRoute__route)
 
     # Build the HTTP response
     response_header = (
@@ -116,7 +128,7 @@ def start_server(host, port):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((host, port))
-    server_socket.listen(5)
+    server_socket.listen(PARAMETERS["listen_time"])
 
     print(f"Server listening on {host}:{port}")
 
@@ -128,6 +140,6 @@ def start_server(host, port):
 
 
 if __name__ == "__main__":
-    HOST = "localhost"
-    PORT = 8080
+    HOST = PARAMETERS["host"]
+    PORT = PARAMETERS["website_port"]
     start_server(HOST, PORT)

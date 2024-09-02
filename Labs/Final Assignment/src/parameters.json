@@ -1,5 +1,7 @@
 {
 	"key": "RAVEN",
+	"website_port": 8080,
+	"host": "localhost",
 	"encrypted_message_file_path": "encrypted_message.txt",
 	"hidden_web_page_route": "secretmission",
 	"split_length": 12,
@@ -7,5 +9,9 @@
 	"server_ip": "127.0.0.1",
 	"server_port": 9999,
 	"client_port": 8888,
-	"buffer_size": 256
+	"buffer_size": 256,
+	"timeout": 2,
+	"max_wait_time": 30,
+	"socket_recv_size": 1024,
+	"listen_time": 5
 }

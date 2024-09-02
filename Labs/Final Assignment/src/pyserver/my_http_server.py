@@ -1,3 +1,4 @@
+# USE IF RUNNING ON CLOUD
 import socket
 import threading
 import os
@@ -5,7 +6,6 @@ import logging
 from google.cloud import logging as cloud_logging
 from generate_htmls import generate_home_page, generate_secret_mission_page, add_secret_field, generate_final_message_page
 
-# USE IF RUNNING ON CLOUD
 
 # Initialize Cloud Logging
 client = cloud_logging.Client()
@@ -41,6 +41,7 @@ def handle_client(client_socket, client_address):
                 headers[header] = value
 
         # Check for User-Agent
+        # Google Cloud requires 'user-agent' instead of 'User-Agent'
         user_agent = headers.get('user-agent', '')
         logger.info(f"User-Agent: {user_agent}")
         # Prepare the response

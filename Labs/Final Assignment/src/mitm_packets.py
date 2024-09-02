@@ -3,7 +3,9 @@ import time
 import threading
 import random
 import string
+from scapy.all import *
 from base64 import b64encode
+from typing import List
 from encryption import generate_column_cipher_encryption
 from utils import open_json_file
 
@@ -20,53 +22,73 @@ SERVER_IP = PARAMETERS["server_ip"]
 SERVER_PORT = PARAMETERS["server_port"]
 CLIENT_PORT = PARAMETERS["client_port"]
 BUFFER_SIZE = PARAMETERS["buffer_size"]
+TIMEOUT = PARAMETERS["timeout"]
+MAX_WAIT_TIME = PARAMETERS["max_wait_time"]
 
 
-def create_packets():
-    packets = []
-
-    # print(generate_column_cipher_encryption(PARAMETERS["key"],
-    #                                         MESSAGES["column_cipher_message"]))
-    # Encode to make the padding easier
-    column_cypher_message = generate_column_cipher_encryption(
+def create_message_parts() -> List[str]:
+    column_cipher_message = generate_column_cipher_encryption(
         PARAMETERS["key"], MESSAGES["column_cipher_message"]).encode()
 
-    # Calculate padding length
-    padding_length = (SPLIT_LENGTH - (len(column_cypher_message) %
+    padding_length = (SPLIT_LENGTH - (len(column_cipher_message) %
                       SPLIT_LENGTH)) % SPLIT_LENGTH
-    padded_message = column_cypher_message + b'\x00' * padding_length
+    padded_message = column_cipher_message + b'\x00' * padding_length
 
-    # Determine the length needed for number padding
     max_index_length = len(str(len(padded_message) // SPLIT_LENGTH))
 
-    # Create message parts with zero-padded indices
-    message_parts = [
+    return [
         b64encode(padded_message[i:i + SPLIT_LENGTH]).decode() +
-        "ctf" + f"{i // SPLIT_LENGTH:0{max_index_length}d}"
+        f"ctf{i // SPLIT_LENGTH:0{max_index_length}d}"
         for i in range(0, len(padded_message), SPLIT_LENGTH)
     ]
 
-    # Length of each message part (including "ctf" and zero-padded index)
+
+def create_fake_message(length: int, max_index: int, max_index_length: int) -> str:
+    '''
+    Creates fake messages with ftc ending
+    '''
+    base_fake_message = ''.join(random.choices(
+        string.ascii_letters + string.digits, k=length))
+    return f"{base_fake_message[:length - 5]}ftc{random.randint(0, max_index):0{max_index_length}d}"
+
+
+def create_packets() -> List[Packet]:
+    '''
+    Creates real and fake packets, shuffles them and adds the clue message at the beginning
+    '''
+    message_parts = create_message_parts()
     message_length = len(message_parts[0])
+    max_index = len(message_parts)
+    max_index_length = len(str(max_index))
 
-    # Insert the real hidden message parts into random packets
+    packets = []
+
+    # Create packets with real message parts
     for part in message_parts:
-        packets.append(part)
+        packet = Ether(src=RandMAC(), dst=RandMAC()) / \
+            IP(src=RandIP(), dst=RandIP()) / \
+            UDP(sport=RandShort(), dport=RandShort()) / \
+            Raw(part.encode())
+        packets.append(packet)
 
-    # Add some additional random packets with fake messages of the same length
-    for i in range(len(message_parts), TOTAL_NUMBER_OF_PACKETS - 1):
-        base_fake_message = ''.join(random.choices(
-            string.ascii_letters + string.digits, k=message_length))
-        base_fake_message = base_fake_message[:message_length - 5]
-        fake_message = base_fake_message + "ftc" + \
-            f"{random.randint(0, len(message_parts)):0{max_index_length}d}"
-        packets.append(fake_message)
+    # Create packets with fake messages
+    for _ in range(len(message_parts), TOTAL_NUMBER_OF_PACKETS - 1):
+        fake_message = create_fake_message(
+            message_length, max_index, max_index_length)
+        packet = Ether(src=RandMAC(), dst=RandMAC()) / \
+            IP(src=RandIP(), dst=RandIP()) / \
+            UDP(sport=RandShort(), dport=RandShort()) / \
+            Raw(fake_message.encode())
+        packets.append(packet)
 
-    # Unsort the packets
     random.shuffle(packets)
 
-    # Insert the first packet with the direct message
-    packets.insert(0, MESSAGES["MITM_message"])
+    # Insert the MITM message at the beginning
+    mitm_packet = Ether(src=RandMAC(), dst=RandMAC()) / \
+        IP(src=RandIP(), dst=RandIP()) / \
+        UDP(sport=RandShort(), dport=RandShort()) / \
+        Raw(MESSAGES["MITM_message"].encode())
+    packets.insert(0, mitm_packet)
 
     return packets
 
@@ -74,39 +96,37 @@ def create_packets():
 def start_server():
     packets = create_packets()
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_socket:
-        udp_socket.bind((SERVER_IP, SERVER_PORT))  # Bind the server socket
+        udp_socket.bind((SERVER_IP, SERVER_PORT))
         print("Server is waiting for the client to be ready...")
-        ready_to_receive.wait()  # Wait for the client to be ready
+        ready_to_receive.wait()
         print("Server is sending packets...")
         client_address = (SERVER_IP, CLIENT_PORT)
         for packet in packets:
-            udp_socket.sendto(packet.encode(), client_address)
-            time.sleep(0.5)  # Short delay to mimic packet sending timing
-
+            udp_socket.sendto(bytes(packet), client_address)
+            time.sleep(0.5)
         print(f"{len(packets)} packets sent.")
 
 
 def start_client():
-    time.sleep(1)  # Ensure the server has time to start
-    ready_to_receive.set()  # Notify the server to start sending
+    time.sleep(1)
+    ready_to_receive.set()
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_socket:
         udp_socket.bind((SERVER_IP, CLIENT_PORT))
         print("Client is receiving packets...")
         received_packets = []
         start_time = time.time()
-        while time.time() - start_time < 30 and len(received_packets) < TOTAL_NUMBER_OF_PACKETS:
+        while time.time() - start_time < MAX_WAIT_TIME and len(received_packets) < TOTAL_NUMBER_OF_PACKETS:
             try:
-                udp_socket.settimeout(2)  # Increased timeout to 2 seconds
-                packet, _ = udp_socket.recvfrom(BUFFER_SIZE)
-                received_packets.append(packet.decode())
-                # print(f"Received: {packet.decode()}")
-                # print("Packet received")
+                udp_socket.settimeout(TIMEOUT)
+                packet_data, _ = udp_socket.recvfrom(BUFFER_SIZE)
+                packet = Ether(packet_data)
+                received_packets.append(packet)
             except socket.timeout:
                 print("Timeout occurred, continuing...")
 
     print(f"Received {len(received_packets)} packets.")
     print("All packets received." if len(received_packets) ==
-          TOTAL_NUMBER_OF_PACKETS else "SOMETING WENT WRONG!")
+          TOTAL_NUMBER_OF_PACKETS else "SOMETHING WENT WRONG!")
 
 
 def main():

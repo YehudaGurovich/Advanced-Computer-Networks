@@ -1,6 +1,6 @@
 # CTF Challenge Proposal
 
-#### Yehuda Gurovich - ```44184491```
+#### Yehuda Gurovich - `44184491`
 
 ## Stage 1: Setup & Start
 
@@ -60,7 +60,7 @@ This stage involves running the executable file, observing network traffic, and 
 
 1. **Step 1**: Execute the downloaded file and monitor network traffic to observe packet transmissions.
 2. **Step 2**: Use Wireshark to capture and analyze the network packets.
-3. **Step 3**: Trace the UDP packets in Wireshark to extract the transmitted message.
+3. **Step 3**: Follow the UDP stream for the packets in Wireshark to extract the transmitted message.
 
 ### Result
 
@@ -72,6 +72,9 @@ Participants obtain an encrypted message from the network traffic.
 - **Topic 2**: Using _Wireshark_ for network analysis
 - **Topic 3**: Understanding the _UDP_ protocol and packet analysis
 - **Topic 4**: Performing _MITM attacks_ to capture network traffic
+- **Topic 5**: _Threading_ to handle client and server at the same time when packets get sent in the executable
+- **Topic 6**: _Sockets_ for the client and server
+- **Topic 7**: _Scapy_ to generate all the packets
 
 ---
 
@@ -84,8 +87,9 @@ In this final stage, participants must decrypt the message obtained from the pre
 ### Steps Taken
 
 1. **Step 1**: Analyze the length, cipher type, key, and encoding of the captured message.
-2. **Step 2**: Use Python to decrypt the message using the Columnar Transposition Cipher and Base64 decoding.
-3. **Step 3**: Visit [ctf.yehudagurovich.com/finalmessage](http://ctf.yehudagurovich.com/finalmessage) to access the final message.
+2. **Step 2**: Figure out what parts of the message are useful and need to be ordered, in our case we need the last 21 characters if it ends with ctfXX where XX are the numbers for the order of the packet
+3. **Step 3**: Use Python to decrypt the message using the Columnar Transposition Cipher and Base64 decoding.
+4. **Step 4**: Visit [ctf.yehudagurovich.com/finalmessage](http://ctf.yehudagurovich.com/finalmessage) to access the final message.
 
 ### Result
 
@@ -96,3 +100,4 @@ Participants successfully complete the CTF challenge by decrypting and decoding 
 - **Topic 1**: Understanding and applying _ciphers_
 - **Topic 2**: Techniques for _encryption and decryption_
 - **Topic 3**: _Python programming_ for cryptographic tasks
+- **Topic 4**: _Regex_ for filtering data
