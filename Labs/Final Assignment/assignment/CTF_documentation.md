@@ -1,5 +1,9 @@
 # CTF Challenge Documentation
 
+***Created by Yehuda Gurovich***
+
+This document provides an overview of the Capture the Flag (CTF) challenge created for the final assignment of the course. The challenge is designed to test participants' knowledge of various cybersecurity concepts, including HTTP servers, MITM attacks, Wireshark, cryptography, and more. The challenge consists of four stages, each requiring participants to complete specific tasks to progress to the next stage.
+
 ## Table of Contents
 
 - [CTF Challenge Documentation](#ctf-challenge-documentation)
@@ -19,6 +23,7 @@
 			- [`encryption.py`](#encryptionpy)
 			- [`decrypt.py`](#decryptpy)
 			- [`mitm_packets.py`](#mitm_packetspy)
+	- [Tools and Techniques Used](#tools-and-techniques-used)
 
 You are a cyber-security expert working for a covert government agency. Recently, one of the agency’s top field agents, known only by their codename "Raven," went missing under mysterious circumstances. Before disappearing, Raven was investigating a dangerous criminal organization. Your mission is to follow Raven's digital trail, decode the messages left behind, and uncover who is behind the organization before they strike.
 
@@ -459,3 +464,27 @@ def main():
     server_thread.join()
     print("Finished.")
 ```
+
+## Tools and Techniques Used
+
+1. Python
+2. HTTP servers
+3. Sockets
+4. Threading
+5. Google Cloud Platform
+6. Wireshark
+7. MITM attacks
+8. Cryptography
+9. UDP
+10. Scapy
+11. Pyinstaller
+12. Curl
+13. HTML
+14. CSS
+15. JSON
+16. Docker
+17. Cloud Logging
+18. Self-hosted websites and domains
+19. Regular expressions
+20. Base64 encoding
+21. Simple server-client communication

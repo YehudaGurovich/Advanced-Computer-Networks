@@ -1,6 +1,6 @@
 # CTF Challenge Proposal
 
-#### Yehuda Gurovich - `44184491`
+**_Created by Yehuda Gurovich_**
 
 ## Stage 1: Setup & Start
 
@@ -20,7 +20,9 @@ Participants can view the homepage of the website and begin their exploration.
 
 - **Topic 1**: Basics of a _Python HTTP server_
 - **Topic 2**: Understanding _sockets_ used in HTTP servers
-- **Topic 3**: _Self-hosted websites and domains_, specifically on Google Cloud Platform
+- **Topic 3**: _Self-hosted websites and domains_
+- **Topic 4**: _Google Cloud Platform_
+- **Topic 5**: _Docker_ containers for hosting websites
 
 ---
 
@@ -33,7 +35,7 @@ This stage involves discovering a hidden route on the website and downloading an
 ### Steps Taken
 
 1. **Step 1**: Examine the "Our Services" section on the homepage. Noting that each line starts with a capital letter, combine these letters to form the word "CURL."
-2. **Step 2**: Use the `curl` command on the website to reveal a hidden message. The message contains words with extra spacing. Combining these words reveals: "route is secret message". This indicates the secret route: [ctf.yehudagurovich.com/secretmessage](http://ctf.yehudagurovich.com/secretmessage).
+2. **Step 2**: Use the `curl` command on the website to reveal a hidden message. The message contains words with extra spacing. Combining these words reveals: "route is secret mission". This indicates the secret route: [ctf.yehudagurovich.com/secretmission](http://ctf.yehudagurovich.com/secretmission).
 3. **Step 3**: Access the hidden route to download the necessary executable file.
 
 ### Result

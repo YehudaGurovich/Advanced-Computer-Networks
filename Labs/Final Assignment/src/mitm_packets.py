@@ -7,14 +7,13 @@ from scapy.all import *
 from base64 import b64encode
 from typing import List
 from encryption import generate_column_cipher_encryption
-from utils import open_json_file
+from utils import open_json_file, PARAMETERS
 
 # Event to synchronize server and client
 ready_to_receive = threading.Event()
 
 # Load messages and parameters
 MESSAGES = open_json_file("messages.json")
-PARAMETERS = open_json_file("parameters.json")
 
 SPLIT_LENGTH = PARAMETERS["split_length"]
 TOTAL_NUMBER_OF_PACKETS = PARAMETERS["total_number_of_packets"]
