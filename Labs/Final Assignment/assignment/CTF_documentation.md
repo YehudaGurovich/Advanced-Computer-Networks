@@ -1,29 +1,29 @@
 # CTF Challenge Documentation
 
-***Created by Yehuda Gurovich***
+**_Created by Yehuda Gurovich_**
 
 This document provides an overview of the Capture the Flag (CTF) challenge created for the final assignment of the course. The challenge is designed to test participants' knowledge of various cybersecurity concepts, including HTTP servers, MITM attacks, Wireshark, cryptography, and more. The challenge consists of four stages, each requiring participants to complete specific tasks to progress to the next stage.
 
 ## Table of Contents
 
 - [CTF Challenge Documentation](#ctf-challenge-documentation)
-	- [Table of Contents](#table-of-contents)
-	- [Challenge Overview](#challenge-overview)
-	- [Setup Instructions](#setup-instructions)
-	- [Challenges](#challenges)
-			- [Stage 1: Setup \& Start](#stage-1-setup--start)
-			- [Stage 2: Finding the Secret Route](#stage-2-finding-the-secret-route)
-			- [Stage 3: Executing the File \& MITM Attack](#stage-3-executing-the-file--mitm-attack)
-			- [Stage 4: Decrypting the Message \& Final Message](#stage-4-decrypting-the-message--final-message)
-	- [Files](#files)
-			- [src/pyserver](#srcpyserver)
-			- [src/](#src)
-	- [Noteworthy code](#noteworthy-code)
-			- [`my_http_server.py`](#my_http_serverpy)
-			- [`encryption.py`](#encryptionpy)
-			- [`decrypt.py`](#decryptpy)
-			- [`mitm_packets.py`](#mitm_packetspy)
-	- [Tools and Techniques Used](#tools-and-techniques-used)
+  - [Table of Contents](#table-of-contents)
+  - [Challenge Overview](#challenge-overview)
+  - [Setup Instructions](#setup-instructions)
+  - [Challenges](#challenges)
+      - [Stage 1: Setup \& Start](#stage-1-setup--start)
+      - [Stage 2: Finding the Secret Route](#stage-2-finding-the-secret-route)
+      - [Stage 3: Executing the File \& MITM Attack](#stage-3-executing-the-file--mitm-attack)
+      - [Stage 4: Decrypting the Message \& Final Message](#stage-4-decrypting-the-message--final-message)
+  - [Files](#files)
+      - [src/pyserver](#srcpyserver)
+      - [src/](#src)
+  - [Noteworthy code](#noteworthy-code)
+      - [`my_http_server.py`](#my_http_serverpy)
+      - [`encryption.py`](#encryptionpy)
+      - [`decrypt.py`](#decryptpy)
+      - [`mitm_packets.py`](#mitm_packetspy)
+  - [Tools and Techniques Used](#tools-and-techniques-used)
 
 You are a cyber-security expert working for a covert government agency. Recently, one of the agency’s top field agents, known only by their codename "Raven," went missing under mysterious circumstances. Before disappearing, Raven was investigating a dangerous criminal organization. Your mission is to follow Raven's digital trail, decode the messages left behind, and uncover who is behind the organization before they strike.
 
@@ -59,34 +59,34 @@ Files have two categories, the pyserver files and the normal files. pyserver fil
 
 #### src/pyserver
 
-`.gcloudignore:` Like the .gitignore but for Google Cloud
-`app.yaml:` Configuration file for Google Cloud
-`Dockefile:` Docker configuration file
-`generate_htmls.py:` Python script to generate the html for different parts of the cloud website
-`messages.json:` JSON file with the string html parameters for the cloud website
-`my_http_server.py:` Python script to run the server. It is a simple HTTP server that serves the website using _sockets_, _threading_ and the _HTTP protocol_. It is similar to the `local_http_server.py` but with some modifications to run on the cloud.
-`packets.exe:` Executable file that is downloaded in stage 2. It is a simple client and server that sends a message from the server to the client. It is used to do the _MITM attack_ and capture the packets in Wireshark.
-`parameters.json:` JSON file with the general parameters for the cloud website
-`requirements.txt:` Python requirements for the cloud server to install the necessary libraries
-`styles.json:` JSON file with the string css parameters for the cloud website
-`utils.py:` Python script with some utility functions for the cloud server. Mainly to read the JSON files
-`victor_blackwood.jpg:` Image for the cloud website
+- `.gcloudignore:` Like the .gitignore but for Google Cloud
+- `app.yaml:` Configuration file for Google Cloud
+- `Dockefile:` Docker configuration file
+- `generate_htmls.py:` Python script to generate the html for different parts of the cloud website
+- `messages.json:` JSON file with the string html parameters for the cloud website
+- `my_http_server.py:` Python script to run the server. It is a simple HTTP server that serves the website using _sockets_, _threading_ and the _HTTP protocol_. It is similar to the `local_http_server.py` but with some modifications to run on the cloud.
+- `packets.exe:` Executable file that is downloaded in stage 2. It is a simple client and server that sends a message from the server to the client. It is used to do the _MITM attack_ and capture the packets in Wireshark.
+- `parameters.json:` JSON file with the general parameters for the cloud website
+- `requirements.txt:` Python requirements for the cloud server to install the necessary libraries
+- `styles.json:` JSON file with the string css parameters for the cloud website
+- `utils.py:` Python script with some utility functions for the cloud server. Mainly to read the JSON files
+- `victor_blackwood.jpg:` Image for the cloud website
 
 #### src/
 
-`__init__:` Makes the folder a package
-`decrypt.py:` Script to decrypt the message in stage 4 to test that the encryption and decryption works
-`encryption.py:` Creates the encrypted message for stage 3 using _Columnar Transposition Cipher_
-`local_generate_htmls.py:` Python script to generate the html for different parts of the local website
-`local_http_server.py:` Python script to run the server. It is a simple HTTP server that serves the website using _sockets_, _threading_ and the _HTTP protocol_. It is similar to the `my_http_server.py` but with some modifications to run on localhost.
-`messages.json:` JSON file with the string html parameters for the local website. Has also the messages needed in `mitm_packets.py`
-`mitm_packets.py:` Python script to generate the packets for the _MITM attack_ in stage 3. It generates the packets and sends them to the server and client. It is used to generate `packets.exe` using _pyinstaller_
-`mitm_packets.spec:` Configuration file for _pyinstaller_ to generate the executable
-`packets.exe:` Executable file that is downloaded in stage 2. It is a simple client and server that sends a message from the server to the client. It is used to do the _MITM attack_ and capture the packets in Wireshark.
-`parameters.json:` JSON file with the general parameters for the local website
-`styles.json:` JSON file with the string css parameters for the local website. Same as the cloud website
-`utils.py:` Python script with some utility functions for the local server. Mainly to read the JSON files
-`victor_blackwood.jpg:` Image for the local website
+- `__init__:` Makes the folder a package
+- `decrypt.py:` Script to decrypt the message in stage 4 to test that the encryption and decryption works
+- `encryption.py:` Creates the encrypted message for stage 3 using _Columnar Transposition Cipher_
+- `local_generate_htmls.py:` Python script to generate the html for different parts of the local website
+- `local_http_server.py:` Python script to run the server. It is a simple HTTP server that serves the website using _sockets_, _threading_ and the _HTTP protocol_. It is similar to the `my_http_server.py` but with some modifications to run on localhost.
+- `messages.json:` JSON file with the string html parameters for the local website. Has also the messages needed in `mitm_packets.py`
+- `mitm_packets.py:` Python script to generate the packets for the _MITM attack_ in stage 3. It generates the packets and sends them to the server and client. It is used to generate `packets.exe` using _pyinstaller_
+- `mitm_packets.spec:` Configuration file for _pyinstaller_ to generate the executable
+- `packets.exe:` Executable file that is downloaded in stage 2. It is a simple client and server that sends a message from the server to the client. It is used to do the _MITM attack_ and capture the packets in Wireshark.
+- `parameters.json:` JSON file with the general parameters for the local website
+- `styles.json:` JSON file with the string css parameters for the local website. Same as the cloud website
+- `utils.py:` Python script with some utility functions for the local server. Mainly to read the JSON files
+- `victor_blackwood.jpg:` Image for the local website
 
 ## Noteworthy code
 
